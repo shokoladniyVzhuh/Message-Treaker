@@ -9,9 +9,10 @@ from loguru import logger
 def trigger(action: str, payload: str|None):
     """Execute action with payload"""
     try:
-        if action == 'alarm':
-            # payload = путь к mp3/wav; если не задан, использовать встроенный
-            path = payload or 'assets/alarm.mp3'
+        if action == 'notify':
+            # Путь относительно скрипта
+            current_dir = os.path.dirname(__file__)  # папка, где лежит этот .py
+            path = os.path.join(current_dir, "assets", "alarm.wav")
             if os.path.exists(path):
                 try:
                     wave_obj = sa.WaveObject.from_wave_file(path)

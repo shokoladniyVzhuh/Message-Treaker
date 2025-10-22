@@ -63,24 +63,30 @@ class FullMessageTreakerLauncher:
         
         print("❌ API сервер не отвечает в течение 30 секунд")
         return False
-    
+
     def start_api_server(self):
         """Запуск API сервера"""
         print("🚀 Запуск API сервера...")
-        
+
         try:
-            python_path = os.path.join("venv", "bin", "python")
-            cmd = [python_path, "run_api.py"]
-            
+            # Активируем виртуальное окружение и запускаем API
+            if sys.platform.startswith('win'):
+                # Windows
+                activate_script = "venv\\Scripts\\activate.bat"
+                cmd = f"{activate_script} && python run_api.py"
+            else:
+                # Linux/macOS
+                python_path = os.path.join("venv", "bin", "python")
+                cmd = [python_path, "run_api.py"]
+
             self.api_process = subprocess.Popen(
                 cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                shell=sys.platform.startswith('win')
             )
-            
+
             print("✅ API сервер запущен в фоновом режиме")
             return True
-            
+
         except Exception as e:
             print(f"❌ Ошибка запуска API сервера: {e}")
             return False
@@ -90,13 +96,18 @@ class FullMessageTreakerLauncher:
         print("👁️  Запуск Telegram Watcher...")
         
         try:
-            python_path = os.path.join("venv", "bin", "python")
-            cmd = [python_path, "run_watcher.py"]
+            if sys.platform.startswith('win'):
+                # Windows
+                activate_script = "venv\\Scripts\\activate.bat"
+                cmd = f"{activate_script} && python run_watcher.py"
+            else:
+                # Linux/macOS
+                python_path = os.path.join("venv", "bin", "python")
+                cmd = [python_path, "run_watcher.py"]
             
             self.watcher_process = subprocess.Popen(
                 cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                shell=sys.platform.startswith('win')
             )
             
             print("✅ Telegram Watcher запущен в фоновом режиме")

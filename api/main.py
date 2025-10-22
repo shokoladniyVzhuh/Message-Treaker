@@ -4,8 +4,17 @@ import sqlite3
 from contextlib import closing
 from typing import List, Optional
 from watcher.settings import DB_PATH
+from starlette.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Message Treaker API", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "null"],  # кто может стучаться
+    allow_credentials=True,
+    allow_methods=["*"],   # GET, POST, OPTIONS и т.д.
+    allow_headers=["*"],   # чтобы не ругался на Content-Type, Authorization и т.д.
+)
 
 class Rule(BaseModel):
     chat_id: str
@@ -111,6 +120,3 @@ if __name__ == "__main__":
     import uvicorn
     from watcher.settings import API_HOST, API_PORT
     uvicorn.run(app, host=API_HOST, port=API_PORT)
-
-
-
